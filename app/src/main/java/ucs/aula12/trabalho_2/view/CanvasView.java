@@ -25,14 +25,30 @@ public class CanvasView extends View {
 
     // Ball paint
     Paint ball = new Paint();
-    public float ballX = 350;    // Initial ball coordinates
-    public float ballY = 350;
+    public float ballX;    // Initial ball coordinates
+    public float ballY;
+    public float wallWidth;
+    public float wallHeight;
+
     public int maze[][];
     private List<Coordinates> wallCoordinates = new ArrayList<Coordinates>();
 
     public CanvasView(Context c, AttributeSet attrs) {
         super(c, attrs);
         context = c;
+    }
+
+    public void setWallWidth(float displayWidth) {
+        this.wallWidth = displayWidth / 15 ;
+    }
+
+    public void setWallHeight(float displayHeight) {
+        this.wallHeight = displayHeight  / 7;
+    }
+
+    public void setInitialBallLocation() {
+        this.ballX = wallWidth + ( wallWidth / 2);
+        this.ballY = wallHeight + ( wallHeight / 2);
     }
 
     public void setMaze(int maze[][]) {
@@ -44,18 +60,18 @@ public class CanvasView extends View {
 
         float new_x = ballX + 2*y ;
         float new_y = ballY + 2*x;
-        if (new_x < 0) {
-            new_x = 0;
-        }
-        if (new_y < 0) {
-            new_y = 0;
-        }
-        if ( new_x > this.getWidth() ) {
-            new_x = this.getWidth();
-        }
-        if ( new_y > this.getHeight() ) {
-            new_y = this.getHeight();
-        }
+//        if (new_x < 0) {
+//            new_x = 0;
+//        }
+//        if (new_y < 0) {
+//            new_y = 0;
+//        }
+//        if ( new_x > this.getWidth() ) {
+//            new_x = this.getWidth();
+//        }
+//        if ( new_y > this.getHeight() ) {
+//            new_y = this.getHeight();
+//        }
 
         // Checks if the new position of the ball invades the position of a wall
         touchedWall = checkTouchedWall(new_x, new_y);
@@ -90,20 +106,21 @@ public class CanvasView extends View {
         Paint p2 = new Paint();
         p2.setColor(Color.YELLOW);
 
+
         for(int i = 0; i < maze.length; i++) {
-            int y = (i+1) * 135;
+            float y = i * this.wallHeight;
 
             for (int j = 0; j < maze[0].length; j++) {
 
-                int x = (j+1) * 135;
+                float x = j * this.wallWidth;
 
                 // If the maze's position is a wall, draw a wall block
                 if (maze[i][j] == 1) {
-                    canvas.drawRect(x, y, x+135, y+135, p1);
-                    wallCoordinates.add(new Coordinates(x, y, x+135, y+135));
+                    canvas.drawRect(x, y, x+wallWidth, y+wallHeight, p1);
+                    wallCoordinates.add(new Coordinates(x, y, x+wallWidth, y+wallHeight));
 
                 } else if (maze[i][j] == 2) { // If position of the maze is the final position, draw a yellow final block
-                    canvas.drawRect(x, y, x+135, y+135, p2);
+                    canvas.drawRect(x, y, x+wallWidth, y+wallHeight, p2);
                 }
 
             }

@@ -7,6 +7,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -19,6 +20,8 @@ public class MainActivity extends AppCompatActivity {
     private SensorManager sensorManager;
     private Sensor accelerometer;
     private MazeGenerator maze;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,11 +40,21 @@ public class MainActivity extends AppCompatActivity {
 
         // Instantiates a MazeGenerator with the fixed size of the maze
         maze = new MazeGenerator(7, 15);
+
         // Calls the function to generate the maze matrix
         maze.generateMaze();
 
         // Set the maze matrix in customCanvas
         customCanvas.setMaze(maze.getMaze());
+
+        // Set walls width and height based on device size
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        customCanvas.setWallHeight(displayMetrics.heightPixels);
+        customCanvas.setWallWidth(displayMetrics.widthPixels);
+
+        // Set ball location now that we now the size of the walls
+        customCanvas.setInitialBallLocation();
 
         Button startButton = findViewById(R.id.start_button);
         startButton.setOnClickListener(new View.OnClickListener() {
