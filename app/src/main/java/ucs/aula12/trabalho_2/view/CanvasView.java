@@ -5,10 +5,17 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.graphics.Path;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import ucs.aula12.trabalho_2.model.Coordinates;
 
 public class CanvasView extends View {
 
@@ -18,18 +25,25 @@ public class CanvasView extends View {
 
     // Ball paint
     Paint ball = new Paint();
-    public float ballX = 0;
-    public float ballY = 0;
-
+    public float ballX = 350;    // Initial ball coordinates
+    public float ballY = 350;
+    public int maze[][];
+    private List<Coordinates> wallCoordinates = new ArrayList<Coordinates>();
 
     public CanvasView(Context c, AttributeSet attrs) {
         super(c, attrs);
         context = c;
     }
 
+    public void setMaze(int maze[][]) {
+        this.maze = maze;
+    }
+
     public void updateBall(float x, float y) {
-        float new_x = ballX + x;
-        float new_y = ballY + y;
+        boolean touchedWall;
+
+        float new_x = ballX + 2*y ;
+        float new_y = ballY + 2*x;
         if (new_x < 0) {
             new_x = 0;
         }
@@ -42,8 +56,15 @@ public class CanvasView extends View {
         if ( new_y > this.getHeight() ) {
             new_y = this.getHeight();
         }
-        this.ballX = new_x;
-        this.ballY = new_y;
+
+        // Checks if the new position of the ball invades the position of a wall
+        touchedWall = checkTouchedWall(new_x, new_y);
+
+        // If do not invade the position of a wall, update the ball's position
+        if (!touchedWall) {
+            this.ballX = new_x;
+            this.ballY = new_y;
+        }
     }
 
     // override onSizeChanged
@@ -61,12 +82,52 @@ public class CanvasView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
+        wallCoordinates.clear();
+
+        Paint p1 = new Paint();
+        p1.setColor(Color.BLUE);
+
+        Paint p2 = new Paint();
+        p2.setColor(Color.YELLOW);
+
+        for(int i = 0; i < maze.length; i++) {
+            int y = (i+1) * 135;
+
+            for (int j = 0; j < maze[0].length; j++) {
+
+                int x = (j+1) * 135;
+
+                // If the maze's position is a wall, draw a wall block
+                if (maze[i][j] == 1) {
+                    canvas.drawRect(x, y, x+135, y+135, p1);
+                    wallCoordinates.add(new Coordinates(x, y, x+135, y+135));
+
+                } else if (maze[i][j] == 2) { // If position of the maze is the final position, draw a yellow final block
+                    canvas.drawRect(x, y, x+135, y+135, p2);
+                }
+
+            }
+        }
+
         ball.setColor(Color.RED);
-        canvas.drawCircle(ballX, ballY, 60, ball);
+        canvas.drawCircle(ballX, ballY, 40, ball);
     }
 
     public void clearCanvas() {
         invalidate();
     }
+
+    public boolean checkTouchedWall(float new_x, float new_y) {
+
+        for(int i = 0; i < wallCoordinates.size(); i++) {
+            if(new_x+20 >= wallCoordinates.get(i).getLeft() && new_x-20 <= wallCoordinates.get(i).getRight()
+                    && new_y-20<= wallCoordinates.get(i).getBottom() && new_y+20>= wallCoordinates.get(i).getTop()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 
 }
