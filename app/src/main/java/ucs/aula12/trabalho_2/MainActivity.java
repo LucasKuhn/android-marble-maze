@@ -6,6 +6,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 
 import ucs.aula12.trabalho_2.view.CanvasView;
@@ -14,9 +15,11 @@ public class MainActivity extends AppCompatActivity {
     private CanvasView customCanvas;
     private SensorManager sensorManager;
     private Sensor accelerometer;
+    private MediaPlayer mp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        musicaInicial();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -41,6 +44,11 @@ public class MainActivity extends AppCompatActivity {
             customCanvas.updateBall(x,y);
             customCanvas.clearCanvas();
         }
+    }
+
+    public void musicaInicial() {
+        mp = MediaPlayer.create(getApplicationContext(), R.raw.abertura_beyblade);
+        mp.start();
     }
 }
 
