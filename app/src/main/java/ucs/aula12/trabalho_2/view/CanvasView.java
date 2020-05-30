@@ -2,6 +2,7 @@ package ucs.aula12.trabalho_2.view;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -15,6 +16,7 @@ import android.graphics.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+import ucs.aula12.trabalho_2.R;
 import ucs.aula12.trabalho_2.model.Coordinates;
 
 public class CanvasView extends View {
@@ -32,6 +34,7 @@ public class CanvasView extends View {
 
     public int maze[][];
     private List<Coordinates> wallCoordinates = new ArrayList<Coordinates>();
+    private Coordinates finalBlockCoordinates;
 
     public CanvasView(Context c, AttributeSet attrs) {
         super(c, attrs);
@@ -56,31 +59,11 @@ public class CanvasView extends View {
     }
 
     public void updateBall(float x, float y) {
-        boolean touchedWall;
+        float new_x = ballX + (y*3);
+        float new_y = ballY + (x*3);
 
-        float new_x = ballX + 2*y ;
-        float new_y = ballY + 2*x;
-//        if (new_x < 0) {
-//            new_x = 0;
-//        }
-//        if (new_y < 0) {
-//            new_y = 0;
-//        }
-//        if ( new_x > this.getWidth() ) {
-//            new_x = this.getWidth();
-//        }
-//        if ( new_y > this.getHeight() ) {
-//            new_y = this.getHeight();
-//        }
-
-        // Checks if the new position of the ball invades the position of a wall
-        touchedWall = checkTouchedWall(new_x, new_y);
-
-        // If do not invade the position of a wall, update the ball's position
-        if (!touchedWall) {
-            this.ballX = new_x;
-            this.ballY = new_y;
-        }
+        this.ballX = new_x;
+        this.ballY = new_y;
     }
 
     // override onSizeChanged
@@ -121,30 +104,49 @@ public class CanvasView extends View {
 
                 } else if (maze[i][j] == 2) { // If position of the maze is the final position, draw a yellow final block
                     canvas.drawRect(x, y, x+wallWidth, y+wallHeight, p2);
+                    finalBlockCoordinates = new Coordinates(x, y, x+wallWidth, y+wallHeight);
                 }
 
             }
         }
 
         ball.setColor(Color.RED);
-        canvas.drawCircle(ballX, ballY, 40, ball);
+//        canvas.drawCircle(ballX, ballY, 40, ball);
+        Bitmap b = BitmapFactory.decodeResource(getResources(), R.drawable.beyblade);
+        Bitmap scaled = Bitmap.createScaledBitmap(b, (int) (wallWidth), (int) (wallWidth), false);
+        canvas.drawBitmap(scaled, (ballX - (scaled.getWidth()/2)), (ballY - (scaled.getHeight()/2)), ball);
     }
 
     public void clearCanvas() {
         invalidate();
     }
 
-    public boolean checkTouchedWall(float new_x, float new_y) {
+    public boolean checkTouchedWall() {
 
         for(int i = 0; i < wallCoordinates.size(); i++) {
-            if(new_x+20 >= wallCoordinates.get(i).getLeft() && new_x-20 <= wallCoordinates.get(i).getRight()
-                    && new_y-20<= wallCoordinates.get(i).getBottom() && new_y+20>= wallCoordinates.get(i).getTop()) {
+            if(ballX+20 >= wallCoordinates.get(i).getLeft() && ballX-20 <= wallCoordinates.get(i).getRight()
+                    && ballY-20<= wallCoordinates.get(i).getBottom() && ballY+20>= wallCoordinates.get(i).getTop()) {
                 return true;
             }
         }
-
         return false;
     }
+
+    public boolean checkReachedEnd() {
+
+        if(
+            ballX+20 >= finalBlockCoordinates.getLeft()
+            && ballX-20 <= finalBlockCoordinates.getRight()
+            && ballY-20<= finalBlockCoordinates.getBottom()
+            && ballY+20>= finalBlockCoordinates.getTop()
+        ) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
 
 
 }
