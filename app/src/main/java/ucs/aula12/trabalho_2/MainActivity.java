@@ -6,6 +6,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.View;
@@ -20,12 +21,19 @@ public class MainActivity extends AppCompatActivity {
     private SensorManager sensorManager;
     private Sensor accelerometer;
     private MazeGenerator maze;
+    private MediaPlayer mediaPlayer;
 
-
+    public void initialMusic() {
+        mediaPlayer = MediaPlayer.create(getApplicationContext(), R.mediaPlayer.abertura_beyblade);
+        mediaPlayer.start();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Play initial song
+        initialMusic();
 
         // Hide status bar
         getSupportActionBar().hide();
