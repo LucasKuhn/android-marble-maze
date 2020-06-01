@@ -15,6 +15,9 @@ import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 import ucs.aula12.trabalho_2.utils.MazeGenerator;
 import ucs.aula12.trabalho_2.view.CanvasView;
@@ -23,10 +26,15 @@ public class MainActivity extends AppCompatActivity {
     private CanvasView customCanvas;
     private SensorManager sensorManager;
     private Sensor accelerometer;
+    private SensorEventListener accelerometerEventListener;
     private MazeGenerator maze;
     private MediaPlayer backgroundMP = new MediaPlayer();
     private MediaPlayer effectsMP = new MediaPlayer();
     private boolean game_started = false;
+    private View overlayScreen;
+    private TextView overlayText;
+    private Button startButton;
+    private int level = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +48,9 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
+        overlayScreen = findViewById(R.id.overlay_screen);
+        overlayText = findViewById(R.id.overlay_text);
+
         // Get the root Linearlayout object.
         customCanvas = (CanvasView) findViewById(R.id.signature_canvas);
 
@@ -49,26 +60,39 @@ public class MainActivity extends AppCompatActivity {
         // Setup canvas according to maze;
         setupCanvas();
 
-        Button startButton = findViewById(R.id.start_button);
+        startButton = findViewById(R.id.start_button);
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startGame();
+                if(game_started) {
+                    restartGame();
+                } else {
+                    startGame();
+                    startButton.setText("Reiniciar");
+                }
             }
         });
     }
 
     public void startGame() {
-        // Restart the maze and ball location if game is already started
-        if (game_started) {
-            setupCanvas();
-        } else {
-            // Declare accelerometer sensor manager
-            sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-            accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-            sensorManager.registerListener(new Accelerometer(), accelerometer, SensorManager.SENSOR_DELAY_UI);
-        }
+        overlayScreen.setVisibility(View.INVISIBLE);
+        overlayText.setVisibility(View.INVISIBLE);
 
+        setupCanvas();
+        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        accelerometerEventListener = new Accelerometer();
+        sensorManager.registerListener(accelerometerEventListener, accelerometer, SensorManager.SENSOR_DELAY_UI);
+
+        game_started = true;
+
+        // Play initial song
+        gameStartSong();
+    }
+
+    public void restartGame() {
+        level = 1;
+        setupCanvas();
         game_started = true;
 
         // Play initial song
@@ -81,6 +105,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Set the maze matrix in customCanvas
         customCanvas.setMaze(maze.getMaze());
+        customCanvas.setLevel(level);
 
         // Set walls width and height based on device size
         DisplayMetrics displayMetrics = new DisplayMetrics();
@@ -113,10 +138,21 @@ public class MainActivity extends AppCompatActivity {
 
             if (customCanvas.checkReachedEnd()) {
                 endReachedSong();
+                nextLevel();
             }
 
             customCanvas.clearCanvas();
         }
+    }
+
+    public void nextLevel() {
+        sensorManager.unregisterListener(accelerometerEventListener);
+        overlayScreen.setVisibility(View.VISIBLE);
+        overlayText.setText("Vitória!");
+        overlayText.setVisibility(View.VISIBLE);
+        startButton.setText("Próximo Nível!");
+        game_started = false;
+        level++;
     }
 
     public void gameStartSong() {

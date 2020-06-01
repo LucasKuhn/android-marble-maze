@@ -31,6 +31,7 @@ public class CanvasView extends View {
     public float ballY;
     public float wallWidth;
     public float wallHeight;
+    public int level;
 
     public int maze[][];
     private List<Coordinates> wallCoordinates = new ArrayList<Coordinates>();
@@ -39,6 +40,14 @@ public class CanvasView extends View {
     public CanvasView(Context c, AttributeSet attrs) {
         super(c, attrs);
         context = c;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
     }
 
     public void setWallWidth(float displayWidth) {
@@ -115,6 +124,11 @@ public class CanvasView extends View {
         Bitmap b = BitmapFactory.decodeResource(getResources(), R.drawable.beyblade);
         Bitmap scaled = Bitmap.createScaledBitmap(b, (int) (wallWidth), (int) (wallWidth), false);
         canvas.drawBitmap(scaled, (ballX - (scaled.getWidth()/2)), (ballY - (scaled.getHeight()/2)), ball);
+
+        // Draw level
+        p2.setColor(Color.WHITE);
+        p2.setTextSize(90);
+        canvas.drawText("Nível: ".concat(Integer.toString(level)), 50, 130, p2);
     }
 
     public void clearCanvas() {
