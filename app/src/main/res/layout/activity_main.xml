@@ -23,5 +23,25 @@
         custom:layout_constraintEnd_toEndOf="parent"
         />
 
+    <View
+        android:id="@+id/overlay_screen"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#B5000000"
+        />
+
+    <TextView
+        android:id="@+id/overlay_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Aperte Start!"
+        custom:layout_constraintStart_toStartOf="parent"
+        custom:layout_constraintEnd_toEndOf="parent"
+        custom:layout_constraintTop_toTopOf="parent"
+        custom:layout_constraintBottom_toBottomOf="parent"
+        android:textColor="#fff"
+        android:textSize="50dp"
+        />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
