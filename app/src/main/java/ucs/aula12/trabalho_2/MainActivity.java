@@ -137,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
                 wallHitSong();
                 vibrateDevice();
                 // Kick back the ball away from the wall
-                customCanvas.updateBall(-3*(level * 2)*x,-3*(level * 2)*y);
+                customCanvas.updateBall(-(level * 4)*x,-(level * 4)*y);
             }
 
             if (customCanvas.checkReachedEnd()) {
