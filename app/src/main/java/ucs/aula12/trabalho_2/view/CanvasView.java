@@ -28,10 +28,10 @@ public class CanvasView extends View {
 
     // Ball paint
     Paint ball = new Paint();
-    public float ballX;    // Initial ball coordinates
-    public float ballY;
-    public float wallWidth;
-    public float wallHeight;
+    private float ballX;    // Initial ball coordinates
+    private float ballY;
+    private float wallWidth;
+    private float wallHeight;
     public int level;
 
     public int maze[][];
@@ -39,11 +39,11 @@ public class CanvasView extends View {
     private Coordinates finalBlockCoordinates;
 
     private Bitmap beybladeBitmap;
+    private Bitmap scaledBeyblade;
 
     public CanvasView(Context c, AttributeSet attrs) {
         super(c, attrs);
         context = c;
-        setBeybladeBitmap();
     }
 
     public int getLevel() {
@@ -123,12 +123,8 @@ public class CanvasView extends View {
             }
         }
 
-        //        ball.setColor(Color.RED);
-        //        canvas.drawCircle(ballX, ballY, 40, ball);
-        //        Bitmap b = BitmapFactory.decodeResource(getResources(), R.drawable.beyblade1);
         // Draw Beyblade
-        Bitmap scaled = Bitmap.createScaledBitmap(beybladeBitmap, (int) (wallWidth), (int) (wallWidth), false);
-        canvas.drawBitmap(scaled, (ballX - (scaled.getWidth()/2)), (ballY - (scaled.getHeight()/2)), ball);
+        canvas.drawBitmap(scaledBeyblade, (ballX - (scaledBeyblade.getWidth()/2)), (ballY - (scaledBeyblade.getHeight()/2)), ball);
 
         // Draw level
         p2.setColor(Color.WHITE);
@@ -175,6 +171,7 @@ public class CanvasView extends View {
         };
         int rnd = new Random().nextInt(beyblades.length);
         beybladeBitmap = BitmapFactory.decodeResource(getResources(), beyblades[rnd]);
+        scaledBeyblade = Bitmap.createScaledBitmap(beybladeBitmap, (int) (wallWidth), (int) (wallWidth), false);
     }
 
 

@@ -137,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
                 wallHitSong();
                 vibrateDevice();
                 // Kick back the ball away from the wall
-                customCanvas.updateBall(-5*x,-5*y);
+                customCanvas.updateBall(-3*(level * 2)*x,-3*(level * 2)*y);
             }
 
             if (customCanvas.checkReachedEnd()) {
@@ -157,7 +157,6 @@ public class MainActivity extends AppCompatActivity {
         startButton.setText("Próximo Nível!");
         game_started = false;
         level++;
-        customCanvas.setBeybladeBitmap();
     }
 
     public void gameStartSong() {
