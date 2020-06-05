@@ -15,6 +15,7 @@ import android.graphics.Path;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import ucs.aula12.trabalho_2.R;
 import ucs.aula12.trabalho_2.model.Coordinates;
@@ -27,15 +28,18 @@ public class CanvasView extends View {
 
     // Ball paint
     Paint ball = new Paint();
-    public float ballX;    // Initial ball coordinates
-    public float ballY;
-    public float wallWidth;
-    public float wallHeight;
+    private float ballX;    // Initial ball coordinates
+    private float ballY;
+    private float wallWidth;
+    private float wallHeight;
     public int level;
 
     public int maze[][];
     private List<Coordinates> wallCoordinates = new ArrayList<Coordinates>();
     private Coordinates finalBlockCoordinates;
+
+    private Bitmap beybladeBitmap;
+    private Bitmap scaledBeyblade;
 
     public CanvasView(Context c, AttributeSet attrs) {
         super(c, attrs);
@@ -68,8 +72,8 @@ public class CanvasView extends View {
     }
 
     public void updateBall(float x, float y) {
-        float new_x = ballX + (y*3);
-        float new_y = ballY + (x*3);
+        float new_x = ballX + y;
+        float new_y = ballY + x;
 
         this.ballX = new_x;
         this.ballY = new_y;
@@ -119,11 +123,8 @@ public class CanvasView extends View {
             }
         }
 
-        ball.setColor(Color.RED);
-//        canvas.drawCircle(ballX, ballY, 40, ball);
-        Bitmap b = BitmapFactory.decodeResource(getResources(), R.drawable.beyblade);
-        Bitmap scaled = Bitmap.createScaledBitmap(b, (int) (wallWidth), (int) (wallWidth), false);
-        canvas.drawBitmap(scaled, (ballX - (scaled.getWidth()/2)), (ballY - (scaled.getHeight()/2)), ball);
+        // Draw Beyblade
+        canvas.drawBitmap(scaledBeyblade, (ballX - (scaledBeyblade.getWidth()/2)), (ballY - (scaledBeyblade.getHeight()/2)), ball);
 
         // Draw level
         p2.setColor(Color.WHITE);
@@ -158,6 +159,19 @@ public class CanvasView extends View {
         } else {
             return false;
         }
+    }
+
+    public void setBeybladeBitmap() {
+        int [] beyblades = {
+                R.drawable.beyblade_1,
+                R.drawable.beyblade_2,
+                R.drawable.beyblade_3,
+                R.drawable.beyblade_4,
+                R.drawable.beyblade_5
+        };
+        int rnd = new Random().nextInt(beyblades.length);
+        beybladeBitmap = BitmapFactory.decodeResource(getResources(), beyblades[rnd]);
+        scaledBeyblade = Bitmap.createScaledBitmap(beybladeBitmap, (int) (wallWidth), (int) (wallWidth), false);
     }
 
 

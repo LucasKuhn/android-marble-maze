@@ -113,6 +113,9 @@ public class MainActivity extends AppCompatActivity {
         customCanvas.setWallHeight(displayMetrics.heightPixels);
         customCanvas.setWallWidth(displayMetrics.widthPixels);
 
+        // Get a random beyblade bitmap
+        customCanvas.setBeybladeBitmap();
+
         // Set ball location now that we now the size of the walls
         customCanvas.setInitialBallLocation();
     }
@@ -126,14 +129,15 @@ public class MainActivity extends AppCompatActivity {
             float x = event.values[0];
             float y = event.values[1];
             float z = event.values[2];
-            customCanvas.updateBall(x,y);
+            // The ball gets faster as you pass more levels
+            customCanvas.updateBall((level * 2) * x,(level * 2) * y);
 
             // If the ball touched a wall
             if (customCanvas.checkTouchedWall()) {
                 wallHitSong();
                 vibrateDevice();
                 // Kick back the ball away from the wall
-                customCanvas.updateBall(-5*x,-5*y);
+                customCanvas.updateBall(-(level * 4)*x,-(level * 4)*y);
             }
 
             if (customCanvas.checkReachedEnd()) {

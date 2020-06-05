@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#008000"
+    android:background="#808080"
     android:orientation="vertical" >
 
     <ucs.aula12.trabalho_2.view.CanvasView
